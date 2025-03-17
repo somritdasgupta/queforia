@@ -24,8 +24,6 @@ export const viewport: Viewport = {
   ],
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export const metadata: Metadata = {
@@ -98,7 +96,7 @@ export const metadata: Metadata = {
     creator: siteConfig.creator,
   },
   icons: {
-    icon: [{ url: "/favicon.ico" }], // Simplified to just use favicon.ico
+    icon: [{ url: "/favicon.ico" }],
   },
   manifest: "/site.webmanifest",
   robots: {
