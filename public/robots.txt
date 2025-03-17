@@ -1,0 +1,10 @@
+# robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://queforia.com/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 10
