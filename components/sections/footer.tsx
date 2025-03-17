@@ -21,7 +21,7 @@ export default function Footer() {
       <motion.div
         initial={{ scale: 0.98 }}
         animate={{ scale: 1 }}
-        className="relative max-w-7xl mx-auto mb-6 px-8 py-3 rounded-2xl backdrop-blur-xl bg-white/[0.02] border border-white/10"
+        className="relative max-w-7xl mx-auto mb-6 px-4 py-2 rounded-2xl backdrop-blur-xl bg-white/[0.02] border border-white/10"
       >
         {/* Gradient background effect */}
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500/10 via-transparent to-fuchsia-500/10 opacity-50" />
@@ -30,23 +30,18 @@ export default function Footer() {
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500/5 to-fuchsia-500/5 animate-pulse" />
 
         {/* Content */}
-        <div className="relative flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-prompt text-white/40">
+        <div className="relative flex flex-row items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] font-prompt text-white/40">
               © {currentYear}
             </span>
-            <motion.span
-              className="text-sm font-prompt text-white/80"
-              whileHover={{ scale: 1.05 }}
-            >
+            <span className="text-[9px] font-prompt font-bold text-white/40">
               Queforia
-            </motion.span>
+            </span>
           </div>
 
-          <div className="flex items-center gap-6 text-[10px] text-white/40">
+          <div className="flex items-center gap-2 text-[9px] text-white/40">
             <span>All Rights Reserved</span>
-            <span className="hidden sm:inline">|</span>
-            <span>Crafted with ♥ in the void</span>
           </div>
         </div>
       </motion.div>

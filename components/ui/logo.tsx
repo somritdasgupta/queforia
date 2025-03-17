@@ -27,13 +27,13 @@ export default function Logo({
       className="inline-block relative"
     >
       {showGradient && (
-        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/30 via-violet-500/30 to-rose-500/30 blur-xl rounded-full" />
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/30 via-violet-500/30 to-rose-500/30 rounded-full" />
       )}
       <div
         className={cn(
           "relative px-6 py-2",
           showGradient &&
-            "border border-white/10 rounded-full bg-black/30 backdrop-blur-sm"
+            "border border-white/10 rounded-full bg-black/30"
         )}
       >
         <span

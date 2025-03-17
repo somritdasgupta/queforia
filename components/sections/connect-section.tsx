@@ -93,7 +93,7 @@ export default function ConnectSection() {
             className="group relative overflow-hidden rounded-2xl p-8 md:p-12
               bg-white/[0.03] backdrop-blur-[12px]
               border border-white/[0.08]
-              transition-all duration-500
+              transition-colors duration-300
               hover:bg-white/[0.05]
               hover:border-white/[0.15]
               hover:shadow-2xl hover:shadow-violet-500/25"
@@ -122,7 +122,7 @@ export default function ConnectSection() {
                   whileTap={{ scale: 0.98 }}
                   className="px-6 py-3 rounded-full bg-white/5 border border-white/10 
                     text-white/80 hover:bg-white/10 transition-all duration-300 
-                    backdrop-blur-sm inline-flex items-center space-x-2"
+                    inline-flex items-center space-x-2"
                 >
                   <span>Visit Store</span>
                   <motion.div

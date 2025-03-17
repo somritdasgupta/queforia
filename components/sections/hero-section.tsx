@@ -171,7 +171,7 @@ export default function HeroSection() {
             >
               <motion.span
                 className={cn(
-                  "tagline-gradient p-8 inline-block bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300 leading-relaxed",
+                  "tagline-gradient p-8 inline-block bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 via-white/90 to-rose-300",
                   pacifico.className
                 )}
                 initial={{ y: 20, opacity: 0 }}
@@ -180,6 +180,11 @@ export default function HeroSection() {
                   delay: 0.5,
                   duration: 0.8,
                   ease: "easeOut",
+                }}
+                style={{
+                  willChange: "transform, opacity",
+                  WebkitBackfaceVisibility: "hidden",
+                  WebkitTransform: "translateZ(0)",
                 }}
               >
                 Extra, Before Ordinary
