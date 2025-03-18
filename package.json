@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate-icons": "tsx scripts/generate-icons.ts"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
@@ -71,8 +72,10 @@
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.35",
+    "sharp": "^0.33.5",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.19.3",
     "typescript": "^5"
   }
 }
