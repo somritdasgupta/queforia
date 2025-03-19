@@ -226,7 +226,7 @@ function DesignSystemTab() {
                     <span className="text-[10px] text-white/40">(px)</span>
                   </div>
                   <span className="font-mono text-xs text-white/60 tabular-nums">
-                    {activeLogo.size}
+                    {activeLogo.size}px
                   </span>
                 </div>
 
@@ -246,12 +246,14 @@ function DesignSystemTab() {
                     ))}
                   </div>
 
-                  {/* Track */}
+                  {/* Track - Fixed calculation */}
                   <div className="absolute inset-x-0 h-[2px] top-1/2 -translate-y-1/2 bg-white/5">
                     <div
                       className="h-full bg-gradient-to-r from-violet-500/40 to-fuchsia-500/40 rounded-full"
                       style={{
-                        width: `${((activeLogo.size - 100) / 480) * 100}%`,
+                        width: `${
+                          ((activeLogo.size - 100) / (580 - 100)) * 100
+                        }%`,
                       }}
                     />
                   </div>
@@ -261,14 +263,16 @@ function DesignSystemTab() {
                     type="range"
                     min="100"
                     max="580"
-                    step="1"
+                    step="10"
                     value={activeLogo.size}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const value =
+                        Math.round(Number(e.target.value) / 10) * 10;
                       setActiveLogo((prev) => ({
                         ...prev,
-                        size: Number(e.target.value),
-                      }))
-                    }
+                        size: value,
+                      }));
+                    }}
                     className="absolute inset-0 w-full appearance-none bg-transparent cursor-pointer
                         [&::-webkit-slider-thumb]:appearance-none
                         [&::-webkit-slider-thumb]:w-1
@@ -276,7 +280,6 @@ function DesignSystemTab() {
                         [&::-webkit-slider-thumb]:rounded-full
                         [&::-webkit-slider-thumb]:bg-white
                         [&::-webkit-slider-thumb]:shadow-sm
-                        [&::-webkit-slider-thumb]:shadow-black/10
                         [&::-webkit-slider-thumb]:border
                         [&::-webkit-slider-thumb]:border-white/20
                         [&::-webkit-slider-thumb]:transition-transform
@@ -329,65 +332,62 @@ function DesignSystemTab() {
                 </div>
 
                 {/* Vertical measurement lines */}
-                {[0, 100, 200, 300, 400].map((px, index) => (
-                  <div
-                    key={px}
-                    className={`absolute top-0 bottom-0 flex items-start justify-center ${
-                      index === 0 ? "left-0" : ""
-                    }`}
-                    style={{ left: index === 0 ? "0" : `${(px / 400) * 100}%` }}
-                  >
-                    <div className="flex flex-col items-center">
+                {Array.from({ length: 5 }).map((_, index) => {
+                  const maxWidth = activeLogo.size;
+                  const step = maxWidth / 4;
+                  const px = Math.round(step * index);
+
+                  return (
+                    <div
+                      key={px}
+                      className={`absolute top-0 bottom-0 flex items-start justify-center ${
+                        index === 0 ? "left-0" : ""
+                      }`}
+                      style={{ left: `${(index / 4) * 100}%` }}
+                    >
+                      <div className="flex flex-col items-center">
+                        <span className="px-1 py-0.5 bg-black/40 rounded text-[10px] font-mono text-white/60 backdrop-blur-sm">
+                          {px}
+                        </span>
+                        <div className="w-px h-full bg-white/5" />
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Horizontal measurement lines */}
+                {Array.from({ length: 4 }).map((_, index) => {
+                  const currentRatio =
+                    siteConfig.aspectRatios.find(
+                      (r) => r.id === activeLogo.ratio
+                    )?.ratio || 1;
+
+                  // Calculate the actual height based on the width and aspect ratio
+                  const totalHeight = Math.round(
+                    activeLogo.size / currentRatio
+                  );
+                  const step = totalHeight / 3;
+                  const px = Math.round(step * index);
+
+                  return (
+                    <div
+                      key={px}
+                      className={`absolute left-0 right-0 flex items-center ${
+                        index === 0 ? "top-0" : ""
+                      }`}
+                      style={{ top: `${(index / 3) * 100}%` }}
+                    >
                       <span className="px-1 py-0.5 bg-black/40 rounded text-[10px] font-mono text-white/60 backdrop-blur-sm">
                         {px}
                       </span>
-                      <div className="w-px h-full bg-white/5" />
+                      <div className="flex-1 h-px bg-white/5" />
                     </div>
-                  </div>
-                ))}
-
-                {/* Horizontal measurement lines */}
-                {[0, 50, 100, 150].map((px, index) => (
-                  <div
-                    key={px}
-                    className={`absolute left-0 right-0 flex items-center ${
-                      index === 0 ? "top-0" : ""
-                    }`}
-                    style={{ top: index === 0 ? "0" : `${(px / 150) * 100}%` }}
-                  >
-                    <span className="px-1 py-0.5 bg-black/40 rounded text-[10px] font-mono text-white/60 backdrop-blur-sm">
-                      {px}
-                    </span>
-                    <div className="flex-1 h-px bg-white/5" />
-                  </div>
-                ))}
+                  );
+                })}
 
                 {/* Center guides */}
                 <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/10 border-l border-dashed border-white/20" />
                 <div className="absolute top-1/2 left-0 right-0 h-px bg-white/10 border-t border-dashed border-white/20" />
-              </div>
-
-              {/* Aspect Ratio Controls - Kept inside */}
-              <div className="absolute top-3 left-3 z-20 flex flex-wrap gap-2 max-w-[80%]">
-                {siteConfig.aspectRatios.map((ratio) => (
-                  <button
-                    key={ratio.id}
-                    onClick={() =>
-                      setActiveLogo((prev) => ({ ...prev, ratio: ratio.id }))
-                    }
-                    title={ratio.description}
-                    className={`px-2 py-1 text-[10px] rounded backdrop-blur-sm transition-all group relative ${
-                      activeLogo.ratio === ratio.id
-                        ? "bg-white/20 text-white border border-white/20"
-                        : "bg-black/20 text-white/60 hover:bg-white/10 border border-white/10 hover:border-white/20"
-                    }`}
-                  >
-                    {ratio.label}
-                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-black/80 text-white/80 text-[8px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                      {ratio.description}
-                    </span>
-                  </button>
-                ))}
               </div>
 
               {/* Logo Preview */}
@@ -407,82 +407,40 @@ function DesignSystemTab() {
               </div>
             </div>
 
-            {/* Color Controls */}
-            <div className="relative group rounded-xl bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 p-0.5">
-              <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-white/10 rounded-xl backdrop-blur-xl overflow-hidden">
-                <div className="flex-1 flex items-center justify-center py-3 px-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-white/40 w-8">
-                      Bg
-                    </span>
-                    <div className="flex gap-1.5">
-                      {siteConfig.brandColors.slice(0, 4).map((color) => (
-                        <button
-                          key={color.value}
-                          onClick={() =>
-                            setActiveLogo((prev) => ({
-                              ...prev,
-                              bgColor: color.value,
-                            }))
-                          }
-                          className={`relative w-6 h-6 rounded-full transition-all duration-300
-                              ${
-                                activeLogo.bgColor === color.value
-                                  ? "ring-2 ring-white shadow-lg shadow-white/10 scale-110"
-                                  : "ring-1 ring-white/20 hover:ring-white/50 hover:scale-105"
-                              }
-                              before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]
-                            `}
-                          style={{ backgroundColor: color.value }}
-                        />
-                      ))}
-                    </div>
+            <div className="rounded-xl bg-white/[0.02] backdrop-blur-xl border border-white/10 p-3">
+              <div className="relative">
+                <div className="overflow-x-auto overflow-y-hidden -mx-1.5 px-1.5 scrollbar-none">
+                  <div className="flex gap-1 min-w-max py-0.5">
+                    {siteConfig.aspectRatios.map((ratio) => (
+                      <AspectRatioButton
+                        key={ratio.id}
+                        ratio={ratio}
+                        isActive={activeLogo.ratio === ratio.id}
+                        onClick={() =>
+                          setActiveLogo((prev) => ({
+                            ...prev,
+                            ratio: ratio.id,
+                          }))
+                        }
+                      />
+                    ))}
                   </div>
                 </div>
-                <div className="flex-1 flex items-center justify-center py-3 px-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-white/40 w-8">
-                      Logo
-                    </span>
-                    <div className="flex gap-1.5">
-                      {siteConfig.brandColors.slice(0, 4).map((color) => (
-                        <button
-                          key={color.value}
-                          onClick={() =>
-                            setActiveLogo((prev) => ({
-                              ...prev,
-                              color: color.value,
-                            }))
-                          }
-                          className={`relative w-6 h-6 rounded-full transition-all duration-300
-                              ${
-                                activeLogo.color === color.value
-                                  ? "ring-2 ring-white shadow-lg shadow-white/10 scale-110"
-                                  : "ring-1 ring-white/20 hover:ring-white/50 hover:scale-105"
-                              }
-                              before:absolute before:inset-0 before:rounded-full before:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]
-                            `}
-                          style={{ backgroundColor: color.value }}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500/10 via-transparent to-fuchsia-500/10 blur-xl" />
               </div>
             </div>
 
-            <div className="rounded-xl bg-white/5 border border-white/10 p-4 space-y-3">
-              <h4 className="text-sm font-prompt text-white/80">
-                Constrast Combinations
-              </h4>
-              <div className="grid grid-cols-2 gap-3">
+            {/* Improved Contrast Combinations UI */}
+            <div className="rounded-xl bg-white/[0.02] backdrop-blur-xl border border-white/10 p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-xs font-medium text-white/60">
+                  Color Combinations
+                </h4>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
                 {[
                   { name: "Dark", bg: "#050a30", fg: "#ffffff" },
-                  { name: "Light", bg: "#f2efeb", fg: "#050a30" },
                   { name: "Electric", bg: "#233dff", fg: "#ffffff" },
+                  { name: "Light", bg: "#f2efeb", fg: "#050a30" },
                   { name: "Accent", bg: "#8f5d46", fg: "#ffffff" },
                 ].map((combo) => (
                   <button
@@ -494,26 +452,33 @@ function DesignSystemTab() {
                         color: combo.fg,
                       }))
                     }
-                    className="group relative rounded-lg overflow-hidden border border-white/10 hover:border-white/20 transition-all"
+                    className={`
+                      group relative h-8 rounded-lg overflow-hidden border
+                      transition-all duration-300
+                      ${
+                        activeLogo.bgColor === combo.bg
+                          ? "border-white/20"
+                          : "border-white/10 hover:border-white/15"
+                      }
+                    `}
                   >
                     <div
-                      className="p-4 flex items-center gap-3"
+                      className="absolute inset-0"
                       style={{ backgroundColor: combo.bg }}
-                    >
-                      {/* Label */}
+                    />
+                    <div className="relative h-full px-3 flex items-center justify-between">
                       <span
-                        className={`text-xs ${
+                        className={`text-[10px] font-medium ${
                           combo.bg === "#f2efeb"
-                            ? "text-black/80"
-                            : "text-white/80"
+                            ? "text-black/70"
+                            : "text-white/70"
                         }`}
                       >
                         {combo.name}
                       </span>
-                      {/* Apply Indicator */}
-                      <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.8)] animate-pulse" />
-                      </div>
+                      {activeLogo.bgColor === combo.bg && (
+                        <div className="w-1 h-1 rounded-full bg-yellow-400/80 shadow-[0_0_4px_rgba(250,204,21,0.5)]" />
+                      )}
                     </div>
                   </button>
                 ))}
@@ -554,5 +519,97 @@ function GuidelineCard({ title, description, items }: GuidelineCardProps) {
         ))}
       </ul>
     </motion.div>
+  );
+}
+
+interface AspectRatioButtonProps {
+  ratio: {
+    id: string;
+    label: string;
+    description: string;
+    ratio: number; // Add ratio property to fix TypeScript error
+  };
+  isActive: boolean;
+  onClick: () => void;
+}
+
+function AspectRatioButton({
+  ratio,
+  isActive,
+  onClick,
+}: AspectRatioButtonProps) {
+  // Convert decimal ratio to proportion (e.g., 0.5625 -> "9:16")
+  const getRatioProportion = (ratio: number) => {
+    // Common ratios
+    const commonRatios = {
+      1: "1:1",
+      1.778: "16:9",
+      0.8: "4:5",
+      1.91: "1.91:1",
+      0.707: "1:√2", // A4
+      0.773: "8.5:11", // US Letter
+      2.333: "21:9", // Cinema
+    };
+
+    if (ratio in commonRatios) {
+      return commonRatios[ratio as keyof typeof commonRatios];
+    }
+
+    // For non-standard ratios, show simplified fraction
+    const tolerance = 0.001;
+    const findRatio = (decimal: number, maxDenom: number = 16): string => {
+      let bestNum = 1;
+      let bestDenom = 1;
+      let bestError = Math.abs(decimal - 1);
+
+      for (let denom = 1; denom <= maxDenom; denom++) {
+        const num = Math.round(decimal * denom);
+        const error = Math.abs(decimal - num / denom);
+        if (error < bestError) {
+          bestError = error;
+          bestNum = num;
+          bestDenom = denom;
+        }
+      }
+
+      return `${bestNum}:${bestDenom}`;
+    };
+
+    return findRatio(ratio);
+  };
+
+  return (
+    <motion.button
+      onClick={onClick}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={`
+        group relative h-7 px-2.5
+        rounded-full 
+        transition-all duration-300
+        ${
+          isActive
+            ? "bg-gradient-to-b from-white/20 to-white/[0.08] border-t border-white/20 shadow-[inset_0px_-1px_1px_rgba(0,0,0,0.1)]"
+            : "bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.08] hover:border-white/10"
+        }
+      `}
+    >
+      <div className="flex items-center">
+        <span className="text-[10px] font-mono text-white/60 tabular-nums">
+          {getRatioProportion(ratio.ratio)}
+        </span>
+      </div>
+
+      {/* Minimal hover tooltip */}
+      <div
+        className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-max
+        opacity-0 group-hover:opacity-100 transition-opacity duration-200
+        pointer-events-none z-50"
+      >
+        <p className="text-[10px] text-white/60 whitespace-nowrap">
+          {ratio.label}
+        </p>
+      </div>
+    </motion.button>
   );
 }
